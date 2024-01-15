@@ -1,0 +1,44 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: clone-task-ref
+spec:
+  workspaces:
+    - name: task-ws
+      description: Workspace for sharing files between tasks
+  steps:
+    - name: clone-step
+      image: bitnami/git
+      securityContext:
+        runAsUser: 0
+      command: ["/bin/sh"]
+      args:
+        - -c
+        - |
+            echo "Starting initial task"
+            git clone https://github.com/Gokul-C/DevOps-K8s-Security.git $(workspaces.task-ws.path)/repository
+            sleep 15
+            ls -la $(workspaces.task-ws.path)/repository
+            echo "Ending clone task"
+---
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: build-task-ref
+spec:
+  workspaces:
+    - name: task-ws
+      description: Workspace for sharing files between tasks
+  steps:
+    - name: build-task
+      image: maven
+      securityContext:
+        runAsUser: 0
+      command: ["/bin/sh"]
+      args:
+        - -c
+        - |
+            echo "Starting build task - Reading file from workspace"
+            cd $(workspaces.task-ws.path)/repository
+            mvn clean package
+            echo "End final task"
