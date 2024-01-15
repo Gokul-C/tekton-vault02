@@ -1,11 +1,11 @@
 apiVersion: tekton.dev/v1beta1
 kind: PipelineRun
 metadata:
-  name: pipeline-cb-run
+  name: pipeline-cbs-run
 spec:
   workspaces:
     - name: pipeline-ws
       persistentVolumeClaim:
         claimName: example-local-claim
   pipelineRef:
-    name: workspace-pipeline2-ref
+    name: workspace-pipeline3-ref
