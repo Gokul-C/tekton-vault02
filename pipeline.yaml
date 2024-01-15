@@ -1,7 +1,7 @@
 apiVersion: tekton.dev/v1beta1
 kind: Pipeline
 metadata:
-  name: workspace-pipeline2-ref
+  name: workspace-pipeline3-ref
 spec:
   workspaces:
     - name: pipeline-ws
@@ -20,3 +20,11 @@ spec:
           workspace: pipeline-ws
       runAfter:
         - clone-task
+    - name: sonar-task
+      taskRef:
+        name: sonar-task-ref
+      workspaces:
+        - name: task-ws
+          workspace: pipeline-ws
+      runAfter:
+        - build-task
