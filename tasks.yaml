@@ -16,7 +16,7 @@ spec:
         - -c
         - |
             echo "Starting initial task"
-            git clone https://github.com/Gokul-C/DevOps-K8s-Security.git $(workspaces.task-ws.path)/repository
+            git clone https://github.com/Gokul-C/DevOps-K8s-Security.git $(workspaces.task-ws.path)/sonar-scanning
             sleep 15
             ls -la $(workspaces.task-ws.path)/sonar-scanning
             echo "Ending clone task"
