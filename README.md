@@ -1,4 +1,4 @@
-# tekton clone-build-static analysis
+# tekton Clone-Build-StaticAnalysis-ImageBuilding
 # Optional -  Pre requisite
 ```
 https://github.com/Gokul-C/tekton-workspaces
