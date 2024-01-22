@@ -71,55 +71,33 @@ metadata:
   name: buildah-task-ref
 spec:
   params:
-  - name: IMAGE
-    description: Reference of the image buildah will produce.
-    default: "tekton-image"
-  - name: BUILDER_IMAGE
-    description: The location of the buildah builder image.
-    default: quay.io/buildah/stable:v1.17.0
-  - name: STORAGE_DRIVER
-    description: Set buildah storage driver
-    default: overlay
-  - name: DOCKERFILE
-    description: Path to the Dockerfile to build.
-    default: ./Dockerfile
-  - name: CONTEXT
-    description: Path to the directory to use as context.
-    default: .
-  - name: TLSVERIFY
-    description: Verify the TLS on the registry endpoint (for push/pull to a non-TLS registry)
-    default: "true"
-  - name: FORMAT
-    description: The format of the built container, oci or docker
-    default: "oci"
-  - name: BUILD_EXTRA_ARGS
-    description: Extra parameters passed for the build command when building images.
-    default: ""
-  - name: PUSH_EXTRA_ARGS
-    description: Extra parameters passed for the push command when pushing images.
-    type: string
-    default: ""
+    - name: IMAGE
+      description: Name (reference) of the image to build.
+    - name: DOCKERFILE
+      description: Path to the Dockerfile to build.
+      default: ./Dockerfile
+    - name: CONTEXT
+      description: The build context used by Kaniko.
+      default: ./
+    - name: EXTRA_ARGS
+      type: array
+      default: []
+    - name: BUILDER_IMAGE
+      description: The image on which builds will run (default is v1.5.1)
+      default: gcr.io/kaniko-project/executor:v1.5.1@sha256:c6166717f7fe0b7da44908c986137ecfeab21f31ec3992f6e128fff8a94be8a5
   workspaces:
     - name: task-ws
       description: Workspace for sharing files between tasks
   steps:
-    - name: buildah-task
-      image: quay.io/buildah/stable:latest
+    - name: kaniko-task
+      image: $(params.BUILDER_IMAGE)
       workingDir: $(workspaces.task-ws.path)/image-building
       securityContext:
         runAsUser: 0
-      command: ["/bin/sh"]
-      args:
-        - -c
-        - |
-            echo "Starting image building task - Reading file from workspace"
-            #cd $(workspaces.task-ws.path)/image-building
-            #buildah login -u XXXXX -p XXXXX docker.io
-            #buildah build -t buildah-image .
-            #buildah tag buildah-image gokulc780/buildah-image
-            #buildah push gokulc780/buildah-image
-            #echo "End image building - pushing"
-            buildah --storage-driver=$(params.STORAGE_DRIVER) bud \
-              $(params.BUILD_EXTRA_ARGS) --format=$(params.FORMAT) \
-              --tls-verify=$(params.TLSVERIFY) --no-cache \
-              -f $(params.DOCKERFILE) -t $(params.IMAGE) $(params.CONTEXT)
+      command:
+        - /kaniko/executor
+        - $(params.EXTRA_ARGS)
+        - --dockerfile=$(params.DOCKERFILE)
+        - --context=$(workspaces.source.path)/$(params.CONTEXT)  # The user does not need to care the workspace and the source.
+        - --destination=$(params.IMAGE)
+        - --oci-layout-path=$(workspaces.source.path)/$(params.CONTEXT)/image-digest
