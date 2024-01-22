@@ -73,6 +73,7 @@ spec:
   params:
     - name: IMAGE
       description: Name (reference) of the image to build.
+      default: tekton-image
     - name: DOCKERFILE
       description: Path to the Dockerfile to build.
       default: ./Dockerfile
