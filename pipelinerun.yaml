@@ -8,4 +8,4 @@ spec:
       persistentVolumeClaim:
         claimName: example-local-claim
   pipelineRef:
-    name: workspace-pipeline3-ref
+    name: workspace-pipeline4-ref
