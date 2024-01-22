@@ -86,6 +86,6 @@ spec:
             cd $(workspaces.task-ws.path)/image-building
             docker build -t tekton-image .
             docker login -u XXXXX -p XXXXXXX
-            docker tag gokulc2127/tekton-image
-            docker push gokulc2127/tekton-image
+            docker tag gokulc780/tekton-image
+            docker push gokulc780/tekton-image
             echo "End image building - pushing"
