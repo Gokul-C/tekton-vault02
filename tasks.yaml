@@ -84,8 +84,9 @@ spec:
         - |
             echo "Starting image building task - Reading file from workspace"
             cd $(workspaces.task-ws.path)/image-building
-            docker build -t tekton-image .
-            docker login -u XXXXX -p XXXXXXX
-            docker tag gokulc780/tekton-image
-            docker push gokulc780/tekton-image
+            sudo chmod 777 /var/run/docker.sock
+            sudo docker build -t tekton-image .
+            sudo docker login -u XXXXX -p XXXXXXX
+            sudo docker tag tekton-image gokulc780/tekton-image
+            sudo docker push gokulc780/tekton-image
             echo "End image building - pushing"
