@@ -9,6 +9,7 @@ spec:
   steps:
     - name: clone-step
       image: bitnami/git
+      workingDir: $(workspaces.task-ws.path)/image-building
       securityContext:
         runAsUser: 0
       command: ["/bin/sh"]
@@ -16,6 +17,7 @@ spec:
         - -c
         - |
             echo "Starting initial task"
+            rm -rf *
             git clone https://github.com/Gokul-C/DevOps-K8s-Security.git $(workspaces.task-ws.path)/image-building
             sleep 15
             ls -la $(workspaces.task-ws.path)/image-building
