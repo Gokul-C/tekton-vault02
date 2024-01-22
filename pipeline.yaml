@@ -1,7 +1,7 @@
 apiVersion: tekton.dev/v1beta1
 kind: Pipeline
 metadata:
-  name: workspace-pipeline5-ref
+  name: workspace-pipeline6-ref
 spec:
   workspaces:
     - name: pipeline-ws
@@ -28,9 +28,9 @@ spec:
           workspace: pipeline-ws
       runAfter:
         - build-task
-    - name: buildah-task
+    - name: kaniko-task
       taskRef:
-        name: buildah-task-ref
+        name: kaniko-task-ref
       workspaces:
         - name: task-ws
           workspace: pipeline-ws
