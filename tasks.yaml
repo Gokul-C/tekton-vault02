@@ -9,7 +9,7 @@ spec:
   steps:
     - name: clone-step
       image: bitnami/git
-      workingDir: $(workspaces.task-ws.path)/kaniko-image-building2
+      workingDir: $(workspaces.task-ws.path)/kaniko-image-building3
       securityContext:
         runAsUser: 0
       command: ["/bin/sh"]
@@ -18,9 +18,9 @@ spec:
         - |
             echo "Starting initial task"
             #rm -rf *
-            git clone https://github.com/Gokul-C/DevOps-K8s-Security.git $(workspaces.task-ws.path)/kaniko-image-building2
+            git clone https://github.com/Gokul-C/DevOps-K8s-Security.git $(workspaces.task-ws.path)/kaniko-image-building3
             sleep 15
-            ls -la $(workspaces.task-ws.path)/kaniko-image-building2
+            ls -la $(workspaces.task-ws.path)/kaniko-image-building3
             echo "Ending clone task"
 ---
 apiVersion: tekton.dev/v1beta1
@@ -41,7 +41,7 @@ spec:
         - -c
         - |
             echo "Starting build task - Reading file from workspace"
-            cd $(workspaces.task-ws.path)/kaniko-image-building2
+            cd $(workspaces.task-ws.path)/kaniko-image-building3
             mvn clean package
             echo "End final task"
 ---
@@ -63,7 +63,7 @@ spec:
         - -c
         - |
             echo "Starting sonar scanning task - Reading file from workspace"
-            cd $(workspaces.task-ws.path)/kaniko-image-building2
+            cd $(workspaces.task-ws.path)/kaniko-image-building3
             mvn clean verify sonar:sonar -Dsonar.projectKey=tekton-sonar -Dsonar.projectName='tekton-sonar' -Dsonar.host.url=http://10.0.1.38:9000 -Dsonar.token=sqp_f197446aaae8c2a83d5f09df398fef507afd7e01
             echo "End sonar scanning"
 ---
@@ -75,7 +75,7 @@ spec:
   params:
     - name: IMAGE
       description: Name (reference) of the image to build.
-      default: tekton-image
+      default: gokulc780/tekton-image
     - name: DOCKERFILE
       description: Path to the Dockerfile to build.
       default: ./Dockerfile
@@ -94,7 +94,10 @@ spec:
   steps:
     - name: kaniko-task
       image: $(params.BUILDER_IMAGE)
-      workingDir: $(workspaces.task-ws.path)/kaniko-image-building2
+      workingDir: $(workspaces.task-ws.path)/kaniko-image-building3
+      env:
+        - name: DOCKER_CONFIG
+          value: docker-creds.json
       securityContext:
         runAsUser: 0
       command:
