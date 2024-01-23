@@ -87,7 +87,7 @@ spec:
       default: []
     - name: BUILDER_IMAGE
       description: The image on which builds will run (default is v1.5.1)
-      default: mgit/base:kaniko-executor-debug-stable
+      default: gcr.io/kaniko-project/executor:debug
   workspaces:
     - name: task-ws
       description: Workspace for sharing files between tasks
