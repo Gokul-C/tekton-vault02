@@ -9,7 +9,7 @@ spec:
   steps:
     - name: clone-step
       image: bitnami/git
-      workingDir: $(workspaces.task-ws.path)/kaniko-image-building3
+      workingDir: $(workspaces.task-ws.path)
       securityContext:
         runAsUser: 0
       command: ["/bin/sh"]
@@ -17,7 +17,7 @@ spec:
         - -c
         - |
             echo "Starting initial task"
-            #rm -rf *
+            rm -rf kaniko-image-building3
             git clone https://github.com/Gokul-C/DevOps-K8s-Security.git $(workspaces.task-ws.path)/kaniko-image-building3
             sleep 15
             ls -la $(workspaces.task-ws.path)/kaniko-image-building3
