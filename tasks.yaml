@@ -104,6 +104,6 @@ spec:
         - /kaniko/executor
         - $(params.EXTRA_ARGS)
         - --dockerfile=$(params.DOCKERFILE)
-        - --context=$(workspaces.source.path)/$(params.CONTEXT)  # The user does not need to care the workspace and the source.
+        - --context=.  # The user does not need to care the workspace and the source.
         - --destination=$(params.IMAGE)
-        - --oci-layout-path=$(workspaces.source.path)/$(params.CONTEXT)/image-digest
+        - --oci-layout-path=$(workspaces.task-ws.path)/kaniko-image-building3/image-digest
