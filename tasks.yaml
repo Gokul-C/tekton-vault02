@@ -75,7 +75,7 @@ spec:
   params:
     - name: IMAGE
       description: Name (reference) of the image to build.
-      default: docker.io/gokulc780/tekton-image
+      default: tekton-image
     - name: DOCKERFILE
       description: Path to the Dockerfile to build.
       default: ./Dockerfile
