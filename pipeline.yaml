@@ -31,9 +31,9 @@ spec:
     - name: send-message-to-teams
       taskRef:
         name: send-to-microsoft-teams
-      workspaces:
-        - name: task-ws
-          workspace: pipeline-ws
+      #workspaces:
+      #  - name: task-ws
+      #    workspace: pipeline-ws
       runAfter:
         - sonar-task
     - name: kaniko-task
