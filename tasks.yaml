@@ -3,6 +3,13 @@ kind: Task
 metadata:
   name: clone-task-ref
 spec:
+  params:
+    - name: github-url
+      description: url of the repo.
+      default: https://github.com/Gokul-C/DevOps-K8s-Security.git
+    - name: directory
+      description: name of the directory inside workspace
+      default: kaniko-image-building3
   workspaces:
     - name: task-ws
       description: Workspace for sharing files between tasks
@@ -18,9 +25,9 @@ spec:
         - |
             echo "Starting initial task"
             rm -rf kaniko-image-building3
-            git clone https://github.com/Gokul-C/DevOps-K8s-Security.git $(workspaces.task-ws.path)/kaniko-image-building3
+            git clone https://github.com/Gokul-C/DevOps-K8s-Security.git $(workspaces.task-ws.path)/$(params.directory)
             sleep 15
-            ls -la $(workspaces.task-ws.path)/kaniko-image-building3
+            ls -la $(workspaces.task-ws.path)/$(params.directory)
             echo "Ending clone task"
 ---
 apiVersion: tekton.dev/v1beta1
@@ -28,12 +35,17 @@ kind: Task
 metadata:
   name: build-task-ref
 spec:
+  params:
+    - name: directory
+      description: name of the directory inside workspace
+      default: kaniko-image-building3
   workspaces:
     - name: task-ws
       description: Workspace for sharing files between tasks
   steps:
     - name: build-task
       image: maven
+      workingDir: $(workspaces.task-ws.path)/$(params.directory)
       securityContext:
         runAsUser: 0
       command: ["/bin/sh"]
@@ -41,7 +53,7 @@ spec:
         - -c
         - |
             echo "Starting build task - Reading file from workspace"
-            cd $(workspaces.task-ws.path)/kaniko-image-building3
+            #cd $(workspaces.task-ws.path)/kaniko-image-building3
             mvn clean package
             echo "End final task"
 ---
@@ -50,12 +62,29 @@ kind: Task
 metadata:
   name: sonar-task-ref
 spec:
+  params:
+    - name: project-key
+      description: Name (reference) of the project key in sonarqube.
+      default: tekton-sonar
+    - name: project-name
+      description: Name (reference) of the project name in sonarqube.
+      default: tekton-sonar
+    - name: host-url
+      description: Sonarqube hosted url.
+      default: http://10.0.1.38:9000
+    - name: sonar-token
+      description: Sonarqube hosted url.
+      default: sqp_f197446aaae8c2a83d5f09df398fef507afd7e01
+    - name: directory
+      description: name of the directory inside workspace
+      default: kaniko-image-building3
   workspaces:
     - name: task-ws
       description: Workspace for sharing files between tasks
   steps:
     - name: sonar-task
       image: maven
+      workingDir: $(workspaces.task-ws.path)/$(params.directory)
       securityContext:
         runAsUser: 0
       command: ["/bin/sh"]
@@ -63,8 +92,8 @@ spec:
         - -c
         - |
             echo "Starting sonar scanning task - Reading file from workspace"
-            cd $(workspaces.task-ws.path)/kaniko-image-building3
-            mvn clean verify sonar:sonar -Dsonar.projectKey=tekton-sonar -Dsonar.projectName='tekton-sonar' -Dsonar.host.url=http://10.0.1.38:9000 -Dsonar.token=sqp_f197446aaae8c2a83d5f09df398fef507afd7e01
+            #cd $(workspaces.task-ws.path)/$(params.directory)
+            mvn clean verify sonar:sonar -Dsonar.projectKey=$(params.project-key) -Dsonar.projectName='$(params.project-name)' -Dsonar.host.url=$(params.host-url) -Dsonar.token=$(params.sonar-token)
             echo "End sonar scanning"
 ---
 apiVersion: tekton.dev/v1beta1
@@ -129,20 +158,23 @@ spec:
       default: ./Dockerfile
     - name: CONTEXT
       description: The build context used by Kaniko.
-      default: ./
+      default: '.'
     - name: EXTRA_ARGS
       type: array
       default: []
     - name: BUILDER_IMAGE
       description: The image on which builds will run (default is v1.5.1)
       default: gcr.io/kaniko-project/executor:debug
+    - name: directory
+      description: name of the directory inside workspace
+      default: kaniko-image-building3
   workspaces:
     - name: task-ws
       description: Workspace for sharing files between tasks
   steps:
     - name: kaniko-task
       image: $(params.BUILDER_IMAGE)
-      workingDir: $(workspaces.task-ws.path)/kaniko-image-building3
+      workingDir: $(workspaces.task-ws.path)/$(params.directory)
       env:
         - name: DOCKER_CONFIG
           value: docker-creds
@@ -152,6 +184,6 @@ spec:
         - /kaniko/executor
         - $(params.EXTRA_ARGS)
         - --dockerfile=$(params.DOCKERFILE)
-        - --context=.  # The user does not need to care the workspace and the source.
+        - --context=$(params.CONTEXT)
         - --destination=$(params.IMAGE)
-        - --oci-layout-path=$(workspaces.task-ws.path)/kaniko-image-building3/image-digest
+        - --oci-layout-path=$(workspaces.task-ws.path)/$(params.directory)/image-digest
