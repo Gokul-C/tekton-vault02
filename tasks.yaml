@@ -184,7 +184,14 @@ spec:
       #    value: docker-creds
       securityContext:
         runAsUser: 0
-      script: |
-          cp -f "/workspace/task-ws/kaniko-image-building3/config.json" /kaniko/.docker/config.json
-         /kaniko/executor $(params.EXTRA_ARGS) --dockerfile=$(params.DOCKERFILE) --context=$(params.CONTEXT) --destination=$(params.IMAGE) 
+      command: ["/bin/sh"]
+      args:
+        - -c
+        - |
+            cp -f "/workspace/task-ws/kaniko-image-building3/config.json" /kaniko/.docker/config.json
+            /kaniko/executor $(params.EXTRA_ARGS) --dockerfile=$(params.DOCKERFILE) --context=$(params.CONTEXT) --destination=$(params.IMAGE) 
+            
+      #script: |
+      #    cp -f "/workspace/task-ws/kaniko-image-building3/config.json" /kaniko/.docker/config.json
+      #   /kaniko/executor $(params.EXTRA_ARGS) --dockerfile=$(params.DOCKERFILE) --context=$(params.CONTEXT) --destination=$(params.IMAGE) 
          
