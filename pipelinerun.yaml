@@ -9,6 +9,6 @@ spec:
         claimName: example-local-claim
     - name: dockerconfig
       secret:
-        secretName: docker-credentials
+        secretName: docker-creds2
   pipelineRef:
     name: workspace-pipeline6-ref
