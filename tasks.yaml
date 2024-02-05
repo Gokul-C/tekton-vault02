@@ -176,22 +176,24 @@ spec:
       optional: true
       mountPath: /kaniko/.docker
   steps:
+    
+    - name: copy-config
+      image: alpine
+      command: ["/bin/sh", "-c"]
+      args:
+        - cp -f "/workspace/task-ws/kaniko-image-building3/config.json" /kaniko/.docker/config.json
     - name: kaniko-task
       image: $(params.BUILDER_IMAGE)
-      workingDir: $(workspaces.task-ws.path)/$(params.directory)
+      workingDir: $(workspaces.task-ws.path)/kaniko-image-building3
       #env:
       #  - name: DOCKER_CONFIG
       #    value: docker-creds
       securityContext:
         runAsUser: 0
-      command: ["/bin/sh"]
-      args:
-        - -c
-        - |
-            #cp -f "/workspace/task-ws/kaniko-image-building3/config.json" /kaniko/.docker/config.json
-            /kaniko/executor $(params.EXTRA_ARGS) --dockerfile=$(params.DOCKERFILE) --context=$(params.CONTEXT) --destination=$(params.IMAGE) 
-            
-      #script: |
-      #    cp -f "/workspace/task-ws/kaniko-image-building3/config.json" /kaniko/.docker/config.json
-      #   /kaniko/executor $(params.EXTRA_ARGS) --dockerfile=$(params.DOCKERFILE) --context=$(params.CONTEXT) --destination=$(params.IMAGE) 
-         
+      command:
+        - /kaniko/executor
+        - $(params.EXTRA_ARGS)
+        - --dockerfile=$(params.DOCKERFILE)
+        - --context=.  # The user does not need to care the workspace and the source.
+        - --destination=$(params.IMAGE)
+        - --oci-layout-path=$(workspaces.task-ws.path)/kaniko-image-building3/image-digest
