@@ -188,7 +188,7 @@ spec:
       args:
         - -c
         - |
-            cp -f "/workspace/task-ws/kaniko-image-building3/config.json" /kaniko/.docker/config.json
+            #cp -f "/workspace/task-ws/kaniko-image-building3/config.json" /kaniko/.docker/config.json
             /kaniko/executor $(params.EXTRA_ARGS) --dockerfile=$(params.DOCKERFILE) --context=$(params.CONTEXT) --destination=$(params.IMAGE) 
             
       #script: |
