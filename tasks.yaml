@@ -71,36 +71,23 @@ spec:
       default: ./Dockerfile
     - name: CONTEXT
       description: The build context used by Kaniko.
-      default: '.'
+      default: ./
     - name: EXTRA_ARGS
       type: array
       default: []
     - name: BUILDER_IMAGE
       description: The image on which builds will run (default is v1.5.1)
       default: gcr.io/kaniko-project/executor:debug
-    - name: directory
-      description: name of the directory inside workspace
-      default: kaniko-image-building3
   workspaces:
     - name: task-ws
       description: Workspace for sharing files between tasks
-    - name: dockerconfig
-      description: Includes a docker `config.json`
-      optional: true
-      mountPath: /kaniko/.docker
   steps:
-    
-    - name: copy-config
-      image: alpine
-      command: ["/bin/sh", "-c"]
-      args:
-        - cp -f "/workspace/task-ws/kaniko-image-building3/config.json" /kaniko/.docker/config.json
     - name: kaniko-task
       image: $(params.BUILDER_IMAGE)
       workingDir: $(workspaces.task-ws.path)/kaniko-image-building3
-      #env:
-      #  - name: DOCKER_CONFIG
-      #    value: docker-creds
+      env:
+        - name: DOCKER_CONFIG
+          value: docker-creds
       securityContext:
         runAsUser: 0
       command:
