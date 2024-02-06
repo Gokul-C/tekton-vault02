@@ -30,4 +30,4 @@ spec:
         - name: task-ws
           workspace: pipeline-ws
       runAfter:
-        - send-message-to-teams
+        - build-task
