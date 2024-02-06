@@ -22,22 +22,7 @@ spec:
           workspace: docker-creds2
       runAfter:
         - clone-task
-    - name: sonar-task
-      taskRef:
-        name: sonar-task-ref
-      workspaces:
-        - name: task-ws
-          workspace: pipeline-ws
-      runAfter:
-        - build-task
-    - name: send-message-to-teams
-      taskRef:
-        name: send-to-microsoft-teams
-      #workspaces:
-      #  - name: task-ws
-      #    workspace: pipeline-ws
-      runAfter:
-        - sonar-task
+    
     - name: kaniko-task
       taskRef:
         name: kaniko-task-ref
