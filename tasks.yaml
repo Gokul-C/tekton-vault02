@@ -85,9 +85,9 @@ spec:
     - name: kaniko-task
       image: $(params.BUILDER_IMAGE)
       workingDir: $(workspaces.task-ws.path)/kaniko-image-building3
-      env:
-        - name: DOCKER_CONFIG
-          value: docker-creds
+      #env:
+      #  - name: DOCKER_CONFIG
+      #    value: docker-creds
       securityContext:
         runAsUser: 0
       command:
