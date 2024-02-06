@@ -5,7 +5,7 @@ metadata:
 spec:
   workspaces:
     - name: pipeline-ws
-    - name: docker-credentials
+    - name: dockerconfig
   tasks:
     - name: clone-task
       taskRef:
