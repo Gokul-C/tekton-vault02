@@ -5,6 +5,7 @@ metadata:
 spec:
   workspaces:
     - name: pipeline-ws
+    - name: docker-credentials
   tasks:
     - name: clone-task
       taskRef:
@@ -18,8 +19,8 @@ spec:
       workspaces:
         - name: task-ws
           workspace: pipeline-ws
-        - name: docker-config
-          workspace: docker-creds2
+        #- name: docker-config
+        #  workspace: docker-creds2
       runAfter:
         - clone-task
     
@@ -29,5 +30,7 @@ spec:
       workspaces:
         - name: task-ws
           workspace: pipeline-ws
+        - name: dockerconfig
+          workspace: docker-credentials
       runAfter:
         - build-task
