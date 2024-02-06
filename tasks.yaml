@@ -101,3 +101,30 @@ spec:
         - --context=.  # The user does not need to care the workspace and the source.
         - --destination=$(params.IMAGE)
         - --oci-layout-path=$(workspaces.task-ws.path)/kaniko-image-building3/image-digest
+---
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: deployment
+spec:
+  params:
+    - name: deployment
+      description: The name of the deployment patch the image
+      type: string
+      default: tekton-image
+    - name: IMAGE
+      description: Location of image to be patched with
+      type: string
+      default: gokulc780/tekton-image:v1
+  steps:
+    - name: patch
+      image: image-registry.openshift-image-registry.svc:5000/openshift/cli:latest
+      command: ["/bin/bash", "-c"]
+      args:
+        - |-
+          oc patch deployment $(inputs.params.deployment) --patch='{"spec":{"template":{"spec":{
+            "containers":[{
+              "name": "$(inputs.params.deployment)",
+              "image":"$(inputs.params.IMAGE)"
+            }]
+          }}}}'
