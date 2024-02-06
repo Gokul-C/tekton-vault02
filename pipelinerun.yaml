@@ -7,7 +7,7 @@ spec:
     - name: pipeline-ws
       persistentVolumeClaim:
         claimName: example-local-claim
-    - name: docker-credentials 
+    - name: dockerconfig
       secret:
         secretName: docker-credentials
   pipelineRef:
