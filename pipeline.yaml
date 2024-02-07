@@ -34,3 +34,11 @@ spec:
           workspace: docker-credentials
       runAfter:
         - build-task
+    - name: deploy-task
+      taskRef:
+        name: deploy-application
+      workspaces:
+        - name: task-ws
+          workspace: pipeline-ws
+      runAfter:
+        - kaniko-task
