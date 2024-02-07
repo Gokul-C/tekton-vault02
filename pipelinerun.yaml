@@ -1,7 +1,7 @@
 apiVersion: tekton.dev/v1beta1
 kind: PipelineRun
 metadata:
-  name: pipeline-gmstk-run
+  name: pipeline-gmkd-run
 spec:
   workspaces:
     - name: pipeline-ws
@@ -11,4 +11,4 @@ spec:
       secret:
         secretName: docker-credentials
   pipelineRef:
-    name: workspace-pipeline6-ref
+    name: workspace-pipeline11-ref
