@@ -102,29 +102,35 @@ spec:
         - --destination=$(params.IMAGE)
         - --oci-layout-path=$(workspaces.task-ws.path)/kaniko-image-building3/image-digest
 ---
-apiVersion: tekton.dev/v1beta1
+apiVersion: tekton.dev/v1alpha1
 kind: Task
 metadata:
-  name: deployment
+  name: deploy-application
 spec:
-  params:
-    - name: deployment
-      description: The name of the deployment patch the image
-      type: string
-      default: tekton-image
-    - name: IMAGE
-      description: Location of image to be patched with
-      type: string
-      default: gokulc780/tekton-image:v1
-  steps:
-    - name: patch
-      image: image-registry.openshift-image-registry.svc:5000/openshift/cli:latest
-      command: ["/bin/bash", "-c"]
-      args:
-        - |-
-          oc patch deployment $(inputs.params.deployment) --patch='{"spec":{"template":{"spec":{
-            "containers":[{
-              "name": "$(inputs.params.deployment)",
-              "image":"$(inputs.params.IMAGE)"
-            }]
-          }}}}'
+  #inputs:
+    #resources:
+    #  - name: git-source
+    #    type: git
+    workspaces:
+    - name: task-ws
+    params:
+      - name: pathToContext
+        description: The path to the build context, used by Kaniko - within the workspace
+        default: .
+      - name: pathToYamlFile
+        description: The path to the yaml file to deploy within the git source
+        default: $(workspaces.task-ws.path)/kaniko-image-building3/deployment.yaml
+      - name: imageUrl
+        description: Url of image repository
+        default: url
+      - name: imageTag
+        description: Tag of the images to be used.
+        default: "v1"
+    steps:
+      - name: deploy-app
+        image: lachlanevenson/k8s-kubectl
+        command: ["kubectl"]
+        args:
+          - "apply"
+          - "-f"
+          - "$(params.pathToYamlFile)"
