@@ -124,7 +124,7 @@ spec:
     - name: task-ws
     steps:
       - name: deploy-app
-        image: lachlanevenson/k8s-kubectl
+        image: bitnami/kubectl:latest
         command: ["kubectl"]
         args:
           - "apply"
