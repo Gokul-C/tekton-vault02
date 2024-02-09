@@ -19,8 +19,6 @@ spec:
       workspaces:
         - name: task-ws
           workspace: pipeline-ws
-        #- name: docker-config
-        #  workspace: docker-creds2
       runAfter:
         - clone-task
     - name: sonar-task
@@ -29,7 +27,7 @@ spec:
       workspaces:
         - name: task-ws
           workspace: pipeline-ws
-       runAfter:
+      runAfter:
         - build-task
     
     - name: kaniko-task
