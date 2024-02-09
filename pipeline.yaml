@@ -23,6 +23,14 @@ spec:
         #  workspace: docker-creds2
       runAfter:
         - clone-task
+    - name: sonar-task
+      taskRef:
+        name: sonar-task-ref
+      workspaces:
+        - name: task-ws
+          workspace: pipeline-ws
+       runAfter:
+        - build-task
     
     - name: kaniko-task
       taskRef:
@@ -33,7 +41,7 @@ spec:
         - name: dockerconfig
           workspace: docker-credentials
       runAfter:
-        - build-task
+        - sonar-task
     - name: deploy-task
       taskRef:
         name: deploy-application
