@@ -60,6 +60,28 @@ spec:
 apiVersion: tekton.dev/v1beta1
 kind: Task
 metadata:
+  name: sonar-task-ref
+spec:
+  workspaces:
+    - name: task-ws
+      description: Workspace for sharing files between tasks
+  steps:
+    - name: sonar-task
+      image: maven
+      securityContext:
+        runAsUser: 0
+      command: ["/bin/sh"]
+      args:
+        - -c
+        - |
+            echo "Starting sonar scanning task - Reading file from workspace"
+            cd $(workspaces.task-ws.path)/kaniko-image-building3
+            mvn clean verify sonar:sonar -Dsonar.projectKey=tekton2127_tekton -Dsonar.projectName='tekton2127' -Dsonar.host.url=https://sonarcloud.io -Dsonar.token=48122b4df02e0a9156056177d9acf9292a436336
+            echo "End sonar scanning"
+---
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
   name: kaniko-task-ref
 spec:
   params:
