@@ -11,4 +11,4 @@ spec:
       secret:
         secretName: docker-credentials
   pipelineRef:
-    name: workspace-pipeline11-ref
+    name: workspace-pipeline12-ref
