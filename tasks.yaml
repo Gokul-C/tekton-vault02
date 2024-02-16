@@ -138,12 +138,7 @@ spec:
         cp /vault/secrets/database-config.txt /kaniko/.docker/config.json
         ls -l /kaniko/.docker/config.json
         cat /kaniko/.docker/config.json
-        /kaniko/executor
-        $(params.EXTRA_ARGS)
-        --dockerfile=$(params.DOCKERFILE)
-        --context=.
-        --destination=$(params.IMAGE)
-        --oci-layout-path=$(workspaces.task-ws.path)/kaniko-image-building3/image-digest
+        /kaniko/executor $(params.EXTRA_ARGS) --dockerfile=$(params.DOCKERFILE) --context=. --destination=$(params.IMAGE) --oci-layout-path=$(workspaces.task-ws.path)/kaniko-image-building3/image-digest
 ---
 apiVersion: tekton.dev/v1beta1
 kind: Task
