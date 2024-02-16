@@ -15,7 +15,7 @@ spec:
       description: Workspace for sharing files between tasks
   steps:
     - name: clone-step
-      image: bitnami/git
+      image: alpine/git
       workingDir: $(workspaces.task-ws.path)
       securityContext:
         runAsUser: 0
