@@ -84,19 +84,19 @@ kind: Task
 metadata:
   name: kaniko-task-ref
   annotations:
-        vault.hashicorp.com/agent-inject: 'true'
-        vault.hashicorp.com/role: 'tekton8'
-        vault.hashicorp.com/agent-inject-secret-database-config.txt: 'tekton/data/database/config5'
-        vault.hashicorp.com/agent-inject-template-database-config.txt: |
-          {{- with secret "tekton/data/database/config5" -}}
-          {
-            "auths": {
-              "https://index.docker.io/v1/": {
-                "auth": "{{ .Data.data.username }}"
-              }
-            }
+    vault.hashicorp.com/agent-inject: 'true'
+    vault.hashicorp.com/role: 'tekton8'
+    vault.hashicorp.com/agent-inject-secret-database-config.txt: 'tekton/data/database/config5'
+    vault.hashicorp.com/agent-inject-template-database-config.txt: |
+      {{- with secret "tekton/data/database/config5" -}}
+      {
+        "auths": {
+          "https://index.docker.io/v1/": {
+            "auth": "{{ .Data.data.username }}"
           }
-          {{- end -}}
+        }
+      }
+      {{- end -}}
 spec:
   params:
     - name: IMAGE
@@ -131,14 +131,15 @@ spec:
       securityContext:
         runAsUser: 0
       command:
-      - /bin/sh
+        - /bin/sh
+        - -c
       args:
-      - -c
-      - |
-        cp /vault/secrets/database-config.txt /kaniko/.docker/config.json
-        ls -l /kaniko/.docker/config.json
-        cat /kaniko/.docker/config.json
-        /kaniko/executor $(params.EXTRA_ARGS) --dockerfile=$(params.DOCKERFILE) --context=. --destination=$(params.IMAGE) --oci-layout-path=$(workspaces.task-ws.path)/kaniko-image-building3/image-digest
+        - |
+          cp /vault/secrets/database-config.txt /kaniko/.docker/config.json
+          ls -l /kaniko/.docker/config.json
+          cat /kaniko/.docker/config.json
+          /kaniko/executor $(params.EXTRA_ARGS) --dockerfile=$(params.DOCKERFILE) --context=. --destination=$(params.IMAGE) --oci-layout-path=$(workspaces.task-ws.path)/kaniko-image-building3/image-digest
+
 ---
 apiVersion: tekton.dev/v1beta1
 kind: Task
