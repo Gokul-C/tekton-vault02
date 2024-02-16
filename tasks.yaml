@@ -83,6 +83,20 @@ apiVersion: tekton.dev/v1beta1
 kind: Task
 metadata:
   name: kaniko-task-ref
+  annotations:
+        vault.hashicorp.com/agent-inject: 'true'
+        vault.hashicorp.com/role: 'tekton8'
+        vault.hashicorp.com/agent-inject-secret-database-config.txt: 'tekton/data/database/config4'
+        vault.hashicorp.com/agent-inject-template-database-config.txt: |
+          {{- with secret "tekton/data/database/config4" -}}
+          {
+            "auths": {
+              "https://index.docker.io/v1/": {
+                "auth": "{{ .Data.data.username }}"
+              }
+            }
+          }
+          {{- end -}}
 spec:
   params:
     - name: IMAGE
@@ -103,10 +117,10 @@ spec:
   workspaces:
     - name: task-ws
       description: Workspace for sharing files between tasks
-    - name: dockerconfig
-      description: Includes a docker `config.json`
-      optional: true
-      mountPath: /kaniko/.docker
+    #- name: dockerconfig
+    #  description: Includes a docker `config.json`
+    #  optional: true
+    #  mountPath: /kaniko/.docker
   steps:
     - name: kaniko-task
       image: $(params.BUILDER_IMAGE)
