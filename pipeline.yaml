@@ -1,7 +1,7 @@
 apiVersion: tekton.dev/v1beta1
 kind: Pipeline
 metadata:
-  name: workspace-pipeline12-ref
+  name: workspace-pipeline-v01-ref
 spec:
   workspaces:
     - name: pipeline-ws
