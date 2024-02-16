@@ -1,14 +1,14 @@
 apiVersion: tekton.dev/v1beta1
 kind: PipelineRun
 metadata:
-  name: pipeline-gmskd2-run
+  name: pipeline-v01-run
 spec:
   workspaces:
     - name: pipeline-ws
       persistentVolumeClaim:
         claimName: example-local-claim
-    - name: docker-credentials
-      secret:
-        secretName: docker-credentials
+    #- name: docker-credentials
+    #  secret:
+    #    secretName: docker-credentials
   pipelineRef:
-    name: workspace-pipeline12-ref
+    name: workspace-pipeline-v01-ref
