@@ -5,7 +5,7 @@ metadata:
 spec:
   workspaces:
     - name: pipeline-ws
-    - name: docker-credentials
+    #- name: docker-credentials
   tasks:
     - name: clone-task
       taskRef:
@@ -36,8 +36,8 @@ spec:
       workspaces:
         - name: task-ws
           workspace: pipeline-ws
-        - name: dockerconfig
-          workspace: docker-credentials
+        #- name: dockerconfig
+        #  workspace: docker-credentials
       runAfter:
         - sonar-task
     - name: deploy-task
