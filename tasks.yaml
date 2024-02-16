@@ -86,9 +86,9 @@ metadata:
   annotations:
         vault.hashicorp.com/agent-inject: 'true'
         vault.hashicorp.com/role: 'tekton8'
-        vault.hashicorp.com/agent-inject-secret-database-config.txt: 'tekton/data/database/config4'
+        vault.hashicorp.com/agent-inject-secret-database-config.txt: 'tekton/data/database/config5'
         vault.hashicorp.com/agent-inject-template-database-config.txt: |
-          {{- with secret "tekton/data/database/config4" -}}
+          {{- with secret "tekton/data/database/config5" -}}
           {
             "auths": {
               "https://index.docker.io/v1/": {
@@ -131,12 +131,19 @@ spec:
       securityContext:
         runAsUser: 0
       command:
-        - /kaniko/executor
-        - $(params.EXTRA_ARGS)
-        - --dockerfile=$(params.DOCKERFILE)
-        - --context=.  # The user does not need to care the workspace and the source.
-        - --destination=$(params.IMAGE)
-        - --oci-layout-path=$(workspaces.task-ws.path)/kaniko-image-building3/image-digest
+      - /bin/sh
+      args:
+      - -c
+      - |
+        cp /vault/secrets/database-config.txt /kaniko/.docker/config.json
+        ls -l /kaniko/.docker/config.json
+        cat /kaniko/.docker/config.json
+        /kaniko/executor
+        $(params.EXTRA_ARGS)
+        --dockerfile=$(params.DOCKERFILE)
+        --context=.
+        --destination=$(params.IMAGE)
+        --oci-layout-path=$(workspaces.task-ws.path)/kaniko-image-building3/image-digest
 ---
 apiVersion: tekton.dev/v1beta1
 kind: Task
