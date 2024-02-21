@@ -118,7 +118,7 @@ spec:
   #  - name: task-ws
   steps:
     - name: sleep
-      image: alpine:3.14
+      image: bitnami/git
       command: ["sh", "-c"]
       args:
         - |
