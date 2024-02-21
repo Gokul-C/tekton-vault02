@@ -103,11 +103,13 @@ spec:
       - name: deploy-app
         image: gcr.io/cloud-builders/kubectl@sha256:8ab94be8b2b4f3d117f02d868b39540fddd225447abf4014f7ba4765cb39f753
         workingDir: $(workspaces.task-ws.path)/kaniko-image-building3
-        command: ["kubectl"]
+        command: ["sh", "-c"]
         args:
-          - "apply"
-          - "-f"
-          - "$(inputs.params.pathToYamlFile)"
+          - |
+            kubectl apply -f "$(inputs.params.pathToYamlFile)"
+            echo "Sleeping for 300 seconds..."
+            sleep 300
+         
 ---
 apiVersion: tekton.dev/v1beta1
 kind: Task
