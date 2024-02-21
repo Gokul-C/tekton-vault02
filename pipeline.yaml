@@ -40,6 +40,11 @@ spec:
         #  workspace: docker-credentials
       runAfter:
         - sonar-task
+    - name: sleep-task
+      taskRef:
+        name: sleep-task
+      runAfter:
+        - kaniko-task
     - name: deploy-task
       taskRef:
         name: deploy-application
@@ -47,4 +52,4 @@ spec:
         - name: task-ws
           workspace: pipeline-ws
       runAfter:
-        - kaniko-task
+        - sleep-task
