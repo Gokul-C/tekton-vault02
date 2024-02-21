@@ -82,7 +82,7 @@ spec:
 apiVersion: tekton.dev/v1beta1
 kind: Task
 metadata:
-  name: kaniko-task
+  name: kaniko-task-ref
 spec:
     params:
       - name: pathToContext
