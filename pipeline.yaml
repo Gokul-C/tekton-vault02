@@ -42,7 +42,7 @@ spec:
         - sonar-task
     - name: sleep-task
       taskRef:
-        name: sleep-task
+        name: sleep-task-ref
       runAfter:
         - kaniko-task
     - name: deploy-task
