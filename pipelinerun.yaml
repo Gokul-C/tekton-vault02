@@ -1,7 +1,7 @@
 apiVersion: tekton.dev/v1beta1
 kind: PipelineRun
 metadata:
-  name: pipeline-v01-run
+  name: pipeline-v02-run
 spec:
   workspaces:
     - name: pipeline-ws
@@ -11,4 +11,4 @@ spec:
     #  secret:
     #    secretName: docker-credentials
   pipelineRef:
-    name: workspace-pipeline-v01-ref
+    name: workspace-pipeline-v02-ref
