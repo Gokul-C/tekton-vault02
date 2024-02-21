@@ -97,8 +97,8 @@ spec:
       - name: imageTag
         description: Tag of the images to be used.
         default: "v1"
-    #workspaces:
-    #- name: task-ws
+    workspaces:
+    - name: task-ws
     steps:
       - name: deploy-app
         image: gcr.io/cloud-builders/kubectl@sha256:8ab94be8b2b4f3d117f02d868b39540fddd225447abf4014f7ba4765cb39f753
