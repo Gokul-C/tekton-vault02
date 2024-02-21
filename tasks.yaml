@@ -10,9 +10,9 @@ spec:
     - name: directory
       description: name of the directory inside workspace
       default: kaniko-image-building3
-  workspaces:
-    - name: task-ws
-      description: Workspace for sharing files between tasks
+  #workspaces:
+  #  - name: task-ws
+  #    description: Workspace for sharing files between tasks
   steps:
     - name: clone-step
       image: bitnami/git
