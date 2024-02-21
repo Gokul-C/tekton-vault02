@@ -82,64 +82,31 @@ spec:
 apiVersion: tekton.dev/v1beta1
 kind: Task
 metadata:
-  name: kaniko-task-ref
-  annotations:
-        vault.hashicorp.com/agent-inject: 'true'
-        vault.hashicorp.com/role: 'tekton8'
-        vault.hashicorp.com/agent-inject-secret-config.json: 'tekton/data/database/config5'
-        vault.hashicorp.com/secret-volume-path-config.json: '/kaniko/.docker'
-        vault.hashicorp.com/agent-inject-template-config.json: |
-          {{- with secret "tekton/data/database/config5" -}}
-          {
-            "auths": {
-              "https://index.docker.io/v1/": {
-                "auth": "{{ .Data.data.username }}"
-              }
-            }
-          }
-          {{- end -}}
-
+  name: kaniko-task
 spec:
-  params:
-    - name: IMAGE
-      description: Name (reference) of the image to build.
-      default: gokulc780/tekton-image:v1
-    - name: DOCKERFILE
-      description: Path to the Dockerfile to build.
-      default: ./Dockerfile
-    - name: CONTEXT
-      description: The build context used by Kaniko.
-      default: ./
-    - name: EXTRA_ARGS
-      type: array
-      default: []
-    - name: BUILDER_IMAGE
-      description: The image on which builds will run (default is v1.5.1)
-      default: gcr.io/kaniko-project/executor:debug
-  workspaces:
+    params:
+      - name: pathToContext
+        description: The path to the build context, used by Kaniko - within the workspace
+        default: .
+      - name: pathToYamlFile
+        description: The path to the yaml file to deploy within the git source
+        default: $(workspaces.task-ws.path)/kaniko-image-building3/kaniko-task.yaml
+      - name: imageUrl
+        description: Url of image repository
+        default: url
+      - name: imageTag
+        description: Tag of the images to be used.
+        default: "v1"
+    workspaces:
     - name: task-ws
-      description: Workspace for sharing files between tasks
-    #- name: dockerconfig
-    #  description: Includes a docker `config.json`
-    #  optional: true
-    #  mountPath: /kaniko/.docker
-  steps:
-    - name: kaniko-task
-      image: $(params.BUILDER_IMAGE)
-      workingDir: $(workspaces.task-ws.path)/kaniko-image-building3
-      #env:
-      #  - name: DOCKER_CONFIG
-      #    value: docker-creds
-      securityContext:
-        runAsUser: 0
-      command:
-        - /kaniko/executor
-        - $(params.EXTRA_ARGS)
-        - --dockerfile=$(params.DOCKERFILE)
-        - --context=.  # The user does not need to care the workspace and the source.
-        - --destination=$(params.IMAGE)
-        - --oci-layout-path=$(workspaces.task-ws.path)/kaniko-image-building3/image-digest-digest
-
+    steps:
+      - name: deploy-app
+        image: gcr.io/cloud-builders/kubectl@sha256:8ab94be8b2b4f3d117f02d868b39540fddd225447abf4014f7ba4765cb39f753
+        command: ["kubectl"]
+        args:
+          - "apply"
+          - "-f"
+          - "$(inputs.params.pathToYamlFile)"
 
 ---
 apiVersion: tekton.dev/v1beta1
