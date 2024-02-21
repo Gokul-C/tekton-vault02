@@ -114,6 +114,8 @@ kind: Task
 metadata:
   name: sleep-task-ref
 spec:
+  workspaces:
+    - name: task-ws
   steps:
     - name: sleep
       image: alpine:3.14
