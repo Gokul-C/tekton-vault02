@@ -108,7 +108,20 @@ spec:
           - "apply"
           - "-f"
           - "$(inputs.params.pathToYamlFile)"
-
+---
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: sleep-task
+spec:
+  steps:
+    - name: sleep
+      image: alpine:3.14
+      command: ["sh", "-c"]
+      args:
+        - |
+          echo "Sleeping for 300 seconds..."
+          sleep 300
 ---
 apiVersion: tekton.dev/v1beta1
 kind: Task
