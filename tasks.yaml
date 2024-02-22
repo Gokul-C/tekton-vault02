@@ -76,7 +76,8 @@ spec:
         - |
             echo "Starting sonar scanning task - Reading file from workspace"
             cd $(workspaces.task-ws.path)/kaniko-image-building3
-            mvn verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=tekton2127_tekton -Dsonar.token=48122b4df02e0a9156056177d9acf9292a436336
+            #mvn verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=tekton2127_tekton -Dsonar.token=48122b4df02e0a9156056177d9acf9292a436336
+            mvn verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=tekton2127_numeric-app2 -Dsonar.token=a88d051ef4c3e56233c50d63ab19229f7c86e0f9
             echo "End sonar scanning"
 ---
 apiVersion: tekton.dev/v1beta1
